@@ -1,5 +1,15 @@
 #!venv/bin/python
 
+
+##################################################
+# get_prox.py
+#
+# gets proxies, nothing more, nothing less
+# 
+#
+# author kjutbring
+##################################################
+
 from bs4 import BeautifulSoup
 import mechanize
 
