@@ -1,6 +1,5 @@
 #!venv/bin/python
 
-
 ##################################################
 # get_prox.py
 #
@@ -12,6 +11,7 @@
 
 from bs4 import BeautifulSoup
 import mechanize
+import re
 
 in_url = 'http://proxy-list.org/english/index.php?p='
 
@@ -19,22 +19,25 @@ def get_proxies(url):
 	br = mechanize.Browser()
 	response = br.open(url)
 
-	hot_soup = BeautifulSoup(response)
+	# add proxies to list
+	proxy_list = []
+	for i in range(10):
+		resp = br.open(url+str(i+1))
+		cold_soup = BeautifulSoup(resp)
+		div = cold_soup.find("div", {"class": "table"})
+		prox = div.findAll("li", {"class": "proxy"})
 
-	div_content = hot_soup.find("div", {"class": "table"})
+		# extraction from html string
+		for proxy in prox:
+			proxy_list.append(''.join(re.findall(r'[0-9]+(?:\.[0-9]+)(?:\.+)*(?:\:[0-9]+)*', str(proxy))))
 
-	proxies = div_content.findAll("li", {"class": "proxy"})
-
-	return proxies
+	return proxy_list
 
 def main():
-	proxlist = []
+	plist = get_proxies(in_url)
 
-	for i in range(10):
-		proxlist.append(get_proxies(in_url+str(i+1)))
-
-	for a in proxlist:
-		print a
+	for i in plist:
+		print i
 
 if __name__ == "__main__":
 	main()
