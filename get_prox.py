@@ -34,7 +34,7 @@ def get_proxies(url):
 
 		# extraction from html string
 		for proxy in prox:
-			proxy_list.append(''.join(re.findall(r'[0-9]+(?:\.[0-9]+)(?:\.+)*(?:\:[0-9]+)*', proxy)))
+			proxy_list.append(''.join(re.findall(r'[0-9]+(?:\.[0-9]+)(?:\.+)*(?:\:[0-9]+)*', str(proxy))))
 
 	return proxy_list
 
