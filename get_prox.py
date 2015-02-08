@@ -26,8 +26,8 @@ def get_proxies(url):
 		try:
 			resp = br.open(url+str(i+1))
 		except:
-			print '[-] Failed, do you have the internetz?'
-			
+			print '[-] Failed, check your internet connection.'
+
 		cold_soup = BeautifulSoup(resp)
 		div = cold_soup.find("div", {"class": "table"})
 		prox = div.findAll("li", {"class": "proxy"})
