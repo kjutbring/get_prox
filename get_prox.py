@@ -19,6 +19,8 @@ def get_proxies(url):
 	br = mechanize.Browser()
 	response = br.open(url)
 
+	print '[+] Starting...'
+
 	# add proxies to list
 	proxy_list = []
 	for i in range(10):
@@ -32,6 +34,9 @@ def get_proxies(url):
 			proxy_list.append(''.join(re.findall(r'[0-9]+(?:\.[0-9]+)(?:\.+)*(?:\:[0-9]+)*', str(proxy))))
 
 	return proxy_list
+
+def test_proxies():
+	pass
 
 def main():
 	plist = get_proxies(in_url)
