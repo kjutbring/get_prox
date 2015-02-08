@@ -17,14 +17,17 @@ in_url = 'http://proxy-list.org/english/index.php?p='
 
 def get_proxies(url):
 	br = mechanize.Browser()
-	response = br.open(url)
 
 	print '[+] Starting...'
-
+	
 	# add proxies to list
 	proxy_list = []
 	for i in range(10):
-		resp = br.open(url+str(i+1))
+		try:
+			resp = br.open(url+str(i+1))
+		except:
+			print '[-] Failed, do you have the internetz?'
+			
 		cold_soup = BeautifulSoup(resp)
 		div = cold_soup.find("div", {"class": "table"})
 		prox = div.findAll("li", {"class": "proxy"})
