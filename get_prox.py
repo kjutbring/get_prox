@@ -25,7 +25,7 @@ def get_proxies(url):
 
 	# add proxies to list
 	proxy_list = []
-	for i in range(1):
+	for i in range(10):
 		try:
 			resp = br.open(url+str(i+1))
 		except:
