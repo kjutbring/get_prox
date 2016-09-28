@@ -31,14 +31,16 @@ def get_proxies(url):
 		except:
 			print '[-] Failed, check your internet connection.'
 
-		cold_soup = BeautifulSoup(resp)
+		cold_soup = BeautifulSoup(resp, "lxml")
 		div = cold_soup.find("div", {"class": "table"})
 		prox = div.findAll("li", {"class": "proxy"})
 
 		# extraction from html string
 		for proxy in prox:
-			proxy_list.append(''.join(re.findall(r'[0-9]+(?:\.[0-9]+)(?:\.+)*(?:\:[0-9]+)*', str(proxy))))
-
+			slice1=proxy.text[7:]
+			slice2=slice1[:-2]
+			proxy_list.append(slice2.decode('base64'))
+	print "Got " + str(len(proxy_list)) + " Proxies"
 	return proxy_list
 
 def test_proxies(proxies):
@@ -52,7 +54,7 @@ def test_proxies(proxies):
 				print "[+] Testing proxy: " + proxy
 				br.set_proxies({"http": proxy})
 				resp = br.open("http://icanhazip.com")
-				ip = BeautifulSoup(resp)
+				ip = BeautifulSoup(resp, "lxml")
 				# strip port for comparission
 				strip_proxy = ''.join(re.findall(r'[0-9]+(?:\.[0-9]+){3}', str(proxy)))
 
