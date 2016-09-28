@@ -1,4 +1,5 @@
-#!venv/bin/python
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 ##################################################
 # get_prox.py
@@ -13,19 +14,21 @@ from bs4 import BeautifulSoup
 
 import re
 import mechanize
+import time
+import threading
 
 in_url = 'http://proxy-list.org/english/index.php?p='
 
 def get_proxies(url):
-	
+
 	print '[+] Starting...'
-	
+
 	br = mechanize.Browser()
 	br.set_handle_robots(False)
 
 	# add proxies to list
 	proxy_list = []
-	for i in range(10):
+	for i in range(3):
 		try:
 			resp = br.open(url+str(i+1))
 		except:
@@ -51,21 +54,26 @@ def test_proxies(proxies):
 	with open('outprox.txt', 'w') as out_file:
 		for proxy in proxies:
 			try:
-				print "[+] Testing proxy: " + proxy
+				print ('\033[33m' + "[+] Testing proxy: " + proxy + '\033[37m')
 				br.set_proxies({"http": proxy})
+				now = time.time()
+				br.set_handle_refresh(False)
 				resp = br.open("http://icanhazip.com")
-				ip = BeautifulSoup(resp, "lxml")
+				latency = (time.time())-now
 				# strip port for comparission
 				strip_proxy = ''.join(re.findall(r'[0-9]+(?:\.[0-9]+){3}', str(proxy)))
 
-				if str(ip).strip() == str(strip_proxy):
-					print "[+] Proxy ok!"
-					out_file.write(proxy + "\n")
+				if(resp.wrapped.code==200):
+					if latency < 4:
+						print ('\033[32m' + str(strip_proxy) + " is fine" + '\033[37m')
+						out_file.write(proxy + "\n")
+					elif latency > 4:
+						print ('\033[33m' + str(strip_proxy) + " is kind of slow (latency: " + str(int(latency)) + " sec), ignoring." + '\033[37m')
 				else:
-					print "[-] Proxy not ok!"
-					print str(ip) + " : " + strip_proxy
+					print ('\033[31m' + str(strip_proxy) + " is no good" + '\033[37m')
+
 			except:
-				print "[-] Connection error, proxy: " + proxy
+				print ('\033[31m' + "[-] Connection error, proxy: " + proxy + '\033[37m')
 
 def main():
 	plist = get_proxies(in_url)
